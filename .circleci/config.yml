@@ -21,7 +21,7 @@ jobs:
       - run:
           name: Deploy to Elastic Beanstalk
           command: |
-            pip install awsebcli
+            pip3 install awsebcli --upgrade
             aws configure set aws_access_key_id $AWS_ACCESS_KEY
             aws configure set aws_secret_access_key $AWS_SECRET_KEY
             eb deploy CorsoDockerCircleCI-env
