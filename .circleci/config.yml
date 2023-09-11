@@ -5,22 +5,53 @@ version: 2.1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
-  say-hello:
+  build:
     # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
     # See: https://circleci.com/docs/configuration-reference/#executor-job
     docker:
-      - image: cimg/base:stable
+      - image: docker:19.03.12
     # Add steps to the job
     # See: https://circleci.com/docs/configuration-reference/#steps
     steps:
       - checkout
-      - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
 
-# Orchestrate jobs using workflows
-# See: https://circleci.com/docs/configuration-reference/#workflows
+      - setup_remote_docker:
+          docker_layer_caching: true
+      
+      - run:
+          name: "Build the image"
+          command: "docker build -t ebaymail93/corsodocker:circleci-react -f Dockerfile.dev ."
+
+      - run:
+          name: "Run tests"
+          command: "- docker run -e CI=true ebaymail93/corsodocker:circleci-react npm run test"  
+  deploy:
+    docker:
+      - image: circleci/python:3.7
+
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+
+      - run:
+          name: Deploy to Elastic Beanstalk
+          command: |
+            aws configure set aws_access_key_id $AWS_ACCESS_KEY
+            aws configure set aws_secret_access_key $AWS_SECRET_KEY
+            aws configure set region us-east-1
+            aws elasticbeanstalk create-application-version --application-name docker --version-label $CIRCLE_SHA1 --source-bundle S3Bucket=elasticbeanstalk-us-east-1-923445559289,S3Key=docker/docker-$CIRCLE_SHA1.zip
+            aws elasticbeanstalk update-environment --environment-name docker-env --version-label $CIRCLE_SHA1
+
 workflows:
-  say-hello-workflow:
+  version: 2
+  build-and-deploy:
     jobs:
-      - say-hello
+      - build:
+          filters:
+            branches:
+              only:
+                - main
+
+      #- deploy:
+      #    requires:
+      #      - build
