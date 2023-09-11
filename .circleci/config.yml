@@ -39,7 +39,7 @@ jobs:
             aws configure set aws_access_key_id $AWS_ACCESS_KEY
             aws configure set aws_secret_access_key $AWS_SECRET_KEY
             aws configure set region us-east-1
-            aws elasticbeanstalk create-application-version --application-name docker --version-label $CIRCLE_SHA1 --source-bundle S3Bucket=elasticbeanstalk-us-east-1-923445559289,S3Key=docker/docker-$CIRCLE_SHA1.zip
+            aws elasticbeanstalk create-application-version --application-name docker --version-label $CIRCLE_SHA1 --source-bundle S3Bucket=elasticbeanstalk-us-east-1-836357629532,S3Key=docker/docker-$CIRCLE_SHA1.zip
             aws elasticbeanstalk update-environment --environment-name docker-env --version-label $CIRCLE_SHA1
 
 workflows:
