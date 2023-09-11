@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
   aws-elastic-beanstalk: circleci/aws-elastic-beanstalk@2.0.1
-  node: circleci/node@5.1.0
+  docker: circleci/docker@2.2.0
 jobs:
   build:
     executor: docker/default
