@@ -19,9 +19,6 @@ jobs:
     steps:
     - checkout
     - run:
-        name: Install AWS CLI
-        command: apt-get update && apt-get install -y awscli
-    - run:
         name: Configure AWS CLI
         command: |
           aws configure set aws_access_key_id $AWS_ACCESS_KEY
