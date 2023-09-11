@@ -4,9 +4,13 @@ orbs:
   docker: circleci/docker@2.2.0
 jobs:
   build:
-    executor: docker/default
+    docker:
+      - image: circleci/node:12
+    working_directory: /app
     steps:
       - checkout
+      - setup_remote_docker:
+          version: 19.03.13
       - run:
           name: Build Docker Image
           command: docker build -t ebaymail93/corsodocker -f Dockerfile.dev .
@@ -21,7 +25,7 @@ jobs:
             pip install awsebcli
             aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
             aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-            eb deploy your-environment-name
+            eb deploy CorsoDockerCircleCI-env
 
 workflows:
   version: 2
