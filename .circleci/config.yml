@@ -17,14 +17,20 @@ jobs:
     docker:
       - image: circleci/python:3.7
     steps:
-      - checkout
-      - run:
-          name: Deploy to Elastic Beanstalk
-          command: |
-            pip install awsebcli
-            aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
-            aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-            eb deploy CorsoDockerCircleCI-env
+    - checkout
+    - run:
+        name: Install AWS CLI
+        command: apt-get update && apt-get install -y awscli
+    - run:
+        name: Configure AWS CLI
+        command: |
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set region $AWS_DEFAULT_REGION
+    - run:
+        name: Deploy to Elastic Beanstalk
+        command: |
+          eb deploy CorsoDockerCircleCI-env
 
 workflows:
   version: 2
