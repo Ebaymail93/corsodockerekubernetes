@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  aws-elastic-beanstalk: circleci/aws-elastic-beanstalk@2.0.1
+  eb: circleci/aws-elastic-beanstalk@2.0.1
   docker: circleci/docker@2.2.0
 jobs:
   build:
@@ -18,11 +18,11 @@ jobs:
       - image: circleci/python:3.7
     steps:
     - checkout
-    - aws-elastic-beanstalk/setup
+    - eb/setup
     - run:
         name: Deploy to Elastic Beanstalk
         command: |
-          aws-elastic-beanstalk deploy CorsoDockerCircleCI-env
+          eb deploy CorsoDockerCircleCI-env
 
 workflows:
   version: 2
@@ -32,4 +32,3 @@ workflows:
       - deploy:
           requires:
             - build
-            
