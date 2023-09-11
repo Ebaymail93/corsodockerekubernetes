@@ -43,8 +43,8 @@ workflows:
   build-and-deploy:
     jobs:
       - build
-      - eb/deploy:
-          context: aws-credentials
+      - deploy:
+          context: aws-creds
           filters:
             branches:
               only:
