@@ -1,30 +1,27 @@
 version: 2.1
+orbs:
+  aws-elastic-beanstalk: circleci/aws-elastic-beanstalk@2.0.1
+  node: circleci/node@5.1.0
 jobs:
   build:
-    docker:
-      - image: cimg/node:20.6.0-browsers
+    executor: docker/default
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
       - run:
-          name: "Build the image"
-          command: "docker build -t ebaymail93/corsodocker:circleci-react -f Dockerfile.dev ."
-      - run:
-          name: "Run tests"
-          command: "docker run -e CI=true ebaymail93/corsodocker:circleci-react npm run test"  
+          name: Build Docker Image
+          command: docker build -t ebaymail93/corsodocker -f Dockerfile .
+      - docker/save-image:
+          name: Save Docker Image
+          image_name: ebaymail93/corsodocker
+          tag: circleci-react
   deploy:
-    docker:
-      - image: circleci/python:3.7
+    executor: aws-elasticbeanstalk/default
     steps:
-      - checkout
-      - run:
-          name: Deploy to Elastic Beanstalk
-          command: |
-            pip3 install awsebcli --upgrade
-            aws configure set aws_access_key_id $AWS_ACCESS_KEY
-            aws configure set aws_secret_access_key $AWS_SECRET_KEY
-            eb deploy CorsoDockerCircleCI-env
+      - aws-elasticbeanstalk/deploy:
+          application: Corso Docker CircleCI
+          environment: CorsoDockerCircleCI-env
+          image_path: ebaymail93/corsodocker:circleci-react
+
 workflows:
   version: 2
   build-and-deploy:
