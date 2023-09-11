@@ -26,7 +26,7 @@ jobs:
           name: "Run tests"
           command: "docker run -e CI=true ebaymail93/corsodocker:circleci-react npm run test"  
   deploy:
-    docker:
+      docker:
         - image: cimg/python:3.10
       steps:
         - checkout
