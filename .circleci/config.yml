@@ -18,11 +18,11 @@ jobs:
       - image: circleci/python:3.7
     steps:
     - checkout
-    - eb/setup
+    - aws-elastic-beanstalk/setup
     - run:
         name: Deploy to Elastic Beanstalk
         command: |
-          eb deploy CorsoDockerCircleCI-env
+          aws-elastic-beanstalk deploy CorsoDockerCircleCI-env
 
 workflows:
   version: 2
