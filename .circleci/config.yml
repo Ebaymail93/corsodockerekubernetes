@@ -10,10 +10,6 @@ jobs:
       - run:
           name: Build Docker Image
           command: docker build -t ebaymail93/corsodocker -f Dockerfile .
-      - docker/save-image:
-          name: Save Docker Image
-          image_name: ebaymail93/corsodocker
-          tag: circleci-react
   deploy:
     executor: aws-elasticbeanstalk/default
     steps:
