@@ -24,7 +24,7 @@ jobs:
 
       - run:
           name: "Run tests"
-          command: "- docker run -e CI=true ebaymail93/corsodocker:circleci-react npm run test"  
+          command: "docker run -e CI=true ebaymail93/corsodocker:circleci-react npm run test"  
   deploy:
     docker:
       - image: circleci/python:3.7
