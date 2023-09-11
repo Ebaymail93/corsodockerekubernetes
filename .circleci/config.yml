@@ -27,31 +27,21 @@ jobs:
           command: "docker run -e CI=true ebaymail93/corsodocker:circleci-react npm run test"  
   deploy:
       docker:
-        - image: cimg/python:3.10
-      steps:
-        - checkout
-        - run: pip3 --version
-        - run:
-            working_directory: /
-            name: installing ebcli
-            command: pip3 install awsebcli --upgrade --user
-        - run: eb --version
-        - run:
-            name: deploying with awsebcli
-            command: eb deploy  Corso Docker CircleCI-$CIRCLE_BRANCH
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - run:
+          name: Deploy to Elastic Beanstalk
+          command: |
+            pip install awsebcli
+            aws configure set aws_access_key_id $AWS_ACCESS_KEY
+            aws configure set aws_secret_access_key $AWS_SECRET_KEY
+            eb deploy CorsoDockerCircleCI-env
 workflows:
+  version: 2
   build-and-deploy:
     jobs:
       - build
       - deploy:
-          context: aws-creds
-          filters:
-            branches:
-              only:
-                - master
           requires:
             - build
-
-      #- deploy:
-      #    requires:
-      #      - build
